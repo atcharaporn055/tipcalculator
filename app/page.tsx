@@ -1,65 +1,92 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
 
 export default function Home() {
+  const [bill, setBill] = useState("");
+  const [isTipActive, setIsTipActive] = useState(false);
+
+  // เปลี่ยนจาก 0 เป็น "" (ค่าว่าง)
+  const [tipAmount, setTipAmount] = useState("");
+  const [totalAmount, setTotalAmount] = useState("");
+
+  const handleTipToggle = () => {
+    setIsTipActive(!isTipActive);
+  };
+
+  const calculateTotal = () => {
+    const billNumber = Number(bill) || 0;
+
+    let tip = 0;
+    if (isTipActive) {
+      tip = billNumber * 0.05;
+    }
+
+    const total = billNumber + tip;
+
+    setTipAmount(tip.toFixed(2));
+    setTotalAmount(total.toFixed(2));
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="min-h-screen flex items-center justify-center bg-pink-100">
+      <div className="bg-white p-8 rounded-3xl shadow-xl w-[380px]">
+
+        <h1 className="text-3xl font-bold text-center text-pink-500 mb-6">
+           Tip Calculator
+        </h1>
+
+        {/* Bill */}
+        <label className="block text-pink-600 font-semibold mb-2">
+          Bill
+        </label>
+        <input
+          type="text"
+          inputMode="numeric"
+          placeholder="Enter bill amount"
+          value={bill}
+          onChange={(e) => setBill(e.target.value)}
+          className="w-full p-3 rounded-xl bg-pink-50 border border-pink-300 mb-5 focus:outline-none focus:ring-2 focus:ring-pink-400"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+        {/* Tip 5% Toggle */}
+        <button
+          onClick={handleTipToggle}
+          className={`w-full font-bold py-3 rounded-xl mb-3 transition duration-300 ${
+            isTipActive
+              ? "bg-pink-600 text-white"
+              : "bg-gray-300 text-gray-700"
+          }`}
+        >
+          Tip 5%
+        </button>
+
+        {/* Calculate Button */}
+        <button
+          onClick={calculateTotal}
+          className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 rounded-xl mb-6 transition duration-300"
+        >
+          calculateTotal
+        </button>
+
+        {/* Result */}
+        <div className="bg-pink-50 p-5 rounded-2xl shadow-inner">
+          <p className="text-lg text-gray-700 mb-2">
+            Tip Total
+          </p>
+          <p className="text-2xl font-bold text-pink-500 mb-4">
+            {tipAmount && ` ${tipAmount}`}
+          </p>
+
+          <p className="text-lg text-gray-700 mb-2">
+            Bill Total
+          </p>
+          <p className="text-3xl font-bold text-pink-600">
+            {totalAmount && ` ${totalAmount}`}
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+
+      </div>
     </div>
   );
 }
